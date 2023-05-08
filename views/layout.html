@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/auction.css">
+  <title>{{title}}</title>
+</head>
+
+<body>
+  <div class="container">
+    <div class="profile-wrap">
+      {% if user and user.id%}
+      <div class="username">{{user.nick}}님 안녕하세요</div>
+      <div class="usermoney">보유금액:{{user.money}}</div>
+      <div class="buttons">
+        <a href="/user">내 정보변경</a>
+        <a href="/good">제품등록</a>
+        <a href="/auth/logout">로그아웃</a>
+      </div>
+      {% else%}
+      <form action="/auth/login" method="post">
+        <div class="input-group"><label for="email">이메일</label><input type="email" name="email" id="email"></div>
+        <div class="input-group"><label for="password">비밀번호</label><input type="password" name="password" id="password">
+        </div>
+        <div class="buttons">
+          <input type="submit" value="로그인">
+          <a href="/join">회원가입</a>
+        </div>
+      </form>
+      {% endif%}
+    </div>
+    {% block good%}
+    {% endblock%}
+
+    {% block content%}
+    {% endblock%}
+  </div>
+</body>
+
+</html>

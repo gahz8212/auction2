@@ -1,0 +1,30 @@
+{% extends 'layout.html'%}
+{% block content%}
+<h3>등록자:{{good.Owner.nick}}</h3>
+<h3>제품명: {{good.name}}</h3>
+<h3>시작가격: {{good.price}} 원</h3>
+
+<div id="image">
+  {% for image in images%}
+  <img src="{{image.image}}" alt="" width="100px">
+  {% endfor%}
+</div>
+<form action="/good/{{good.id}}">
+  <div class="input-group"><label for="bid">입찰가</label><input type="number" name="bid" id="bid" min="{{good.price}}">
+  </div>
+  <div class="input-group"><label for="message">메세지</label><input type="text" name="message" id="message"></div>
+  <div class="buttons">
+    <input type="submit" value="입찰">
+    <a href="/">뒤로</a>
+  </div>
+</form>
+<div id="bid">
+  {% for bid in auction%}
+  <span>{{bid.User.nick}}님:</span>
+  <span>{{bid.bid}}원에 입찰 하셨습니다.</span>
+  {% if bid.message%}
+  <span>({{bid.message}})</span>
+  {% endif%}
+  {% endfor%}
+</div>
+{% endblock%}

@@ -1,0 +1,50 @@
+{% extends 'layout.html'%}
+{% block good%}
+<div class="fullscreen">
+  <form action="/post/good" method="post" id="good-form" enctype="multipart/form-data">
+    <div class="input-group"><label for="name">제품명</label><input type="text" name="name" id="name"></div>
+
+    <div class="input-group"><label for="descript">제품설명</label><textarea type="text" name="descript"
+        id="descript"></textarea></div>
+
+    <div class="input-group"><label for="price">시작가격</label><input type="number" name="price" id="price">
+    </div>
+    <div class="input-group"><label for="file">사진등록</label><input type="file" id="file" multiple>
+    </div>
+
+    <div id="images"></div>
+
+    <input type="text" name="images" id="hidden">
+    <div class="buttons">
+      <input type="submit" value="등록">
+      <a href="/">취소</a>
+    </div>
+  </form>
+</div>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+  document.getElementById('file').addEventListener('change', function () {
+    const formData = new FormData();
+    const currentCount = (this.files.length)
+    const images = document.getElementById('images')
+    const hidden = document.getElementById('hidden')
+    const selectedCount = document.getElementById('images').children.length
+    // console.log(currentCount, selectedCount)
+    for (i = currentCount; i >= currentCount + selectedCount - 3; i--) {
+      formData.append('images', this.files[i])
+    }
+    axios.post('/post/image', formData)
+      .then((res) => {
+        res.data.map(image => {
+          let img = document.createElement('img')
+          img.src = image.url
+          img.style.width = '100px';
+          hidden.value = hidden.value + '#' + image.url
+          images.appendChild(img)
+
+        })
+      }).catch(e => { console.error(e) })
+
+  })
+</script>
+{% endblock%}
