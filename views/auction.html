@@ -3,13 +3,13 @@
 <h3>등록자:{{good.Owner.nick}}</h3>
 <h3>제품명: {{good.name}}</h3>
 <h3>시작가격: {{good.price}} 원</h3>
-
+<span>남은시간:</span><strong id="time" data-start="{{good.createdAt}}"></strong>
 <div id="image">
   {% for image in images%}
   <img src="{{image.image}}" alt="" width="100px">
   {% endfor%}
 </div>
-<form action="/good/{{good.id}}">
+<form action="/good/{{good.id}}/bid">
   <div class="input-group"><label for="bid">입찰가</label><input type="number" name="bid" id="bid" min="{{good.price}}">
   </div>
   <div class="input-group"><label for="message">메세지</label><input type="text" name="message" id="message"></div>
@@ -27,4 +27,35 @@
   {% endif%}
   {% endfor%}
 </div>
+<script src="https://unpkg.com/event-source-polyfill/src/eventsource.min.js"></script>
+<script>
+  const es = new EventSource('/sse')
+  es.addEventListener('message', (e) => {
+    const time = document.getElementById('time');
+    const end = new Date(time.dataset.start)
+    end.setDate(end.getDate() + 1)
+    const server = new Date(parseInt(e.data, 10))
+    if (server >= end) {
+      return time.textContent = '00:00:00'
+    } else {
+      const t = end - server;
+      const seconds = ('0' + Math.floor((t / 1000) % 60)).slice(-2)
+      const minutes = ('0' + Math.floor((t / 1000 / 60) % 60)).slice(-2)
+      const hours = ('0' + Math.floor((t / 1000 / 60 / 60) % 60)).slice(-2)
+      return time.textContent = hours + ":" + minutes + ":" + seconds;
+    }
+  })
+</script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io.connect('http://localhost:4000', { path: '/socket.io' })
+  socket.on('bid', (data) => {
+    const bid = document.getElementById('bid')
+    const div = document.createElement('div')
+    let span = document.createElement('span')
+    span.textContent = `${data.nick}님:`;
+
+
+  })
+</script>
 {% endblock%}

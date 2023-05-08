@@ -32,4 +32,5 @@ router.get("/good/:id", async (req, res) => {
     images,
   });
 });
+router.post("/good/:id/bid");
 module.exports = router;
